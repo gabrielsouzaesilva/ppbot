@@ -119,6 +119,6 @@ class PPBot(commands.Cog):
         print (startup_text)
 
 # Create bot, cog and run
-bot = commands.Bot(command_prefix = "!")
+bot = commands.Bot(command_prefix = "$")
 bot.add_cog(PPBot(bot))
 bot.run(os.environ.get('PPBOT_TOKEN'))

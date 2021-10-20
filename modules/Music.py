@@ -1,7 +1,5 @@
-from re import search
 import youtube_dl
 import requests
-import discord
 
 YDL_OPTIONS = {'format': 'bestaudio'}
 

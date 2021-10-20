@@ -4,7 +4,6 @@ import discord
 from discord import client
 from discord.ext import commands
 from discord.ext.commands.core import command
-import emoji
 
 import random
 import pandas as pd
@@ -115,7 +114,7 @@ class PPBot(commands.Cog):
     ## Bot event functions
     @commands.Cog.listener()
     async def on_ready(self):
-        startup_text = emoji.emojize("Patife Bot is online 😎")
+        startup_text = "Patife Bot is online !"
         print (startup_text)
 
 # Create bot, cog and run

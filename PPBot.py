@@ -117,7 +117,14 @@ class PPBot(commands.Cog):
         startup_text = "Patife Bot is online !"
         print (startup_text)
 
+    @commands.command()
+    async def help(self, ctx):
+        help_output = "```Prefix -> $ || Available commands = $[play (url) | search_play 'search query' | pause | resume | dc_voice | join | stock (TICKER) | ping | ddd | rolldice]```"
+        music_routine = "```Music routine commands: $join > $play ytb url OR $join $search_play 'query' (When using $search_play quotes are mandatory)```"
+        await ctx.send(help_output)
+        await ctx.send(music_routine)
+
 # Create bot, cog and run
-bot = commands.Bot(command_prefix = "$")
+bot = commands.Bot(command_prefix = "$", help_command=None)
 bot.add_cog(PPBot(bot))
 bot.run(os.environ.get('PPBOT_TOKEN'))

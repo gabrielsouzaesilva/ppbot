@@ -9,13 +9,22 @@ import emoji
 import random
 import pandas as pd
 
-import yfinance as yf # Mover para modulo externo depois
+# Mover para modulo externo depois
+import yfinance as yf 
+
+from modules import Music
+
+FFMPEG_OPTIONS = {
+    'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 
+    'options': '-vn'
+}
 
 class PPBot(commands.Cog):
     def __init__(self, bot):
         self.base_prefix = "$"
         self.bot = bot
         self._ddd = "069"
+        self._ytb_music = Music.MusicYTB()
 
     # Bot commands
     @commands.command()
@@ -62,6 +71,47 @@ class PPBot(commands.Cog):
             await ctx.send(f"```{stock.quarterly_cashflow.iloc[:8, :].to_markdown()}```")
             await ctx.send(f"```{stock.quarterly_cashflow.iloc[8:, :].to_markdown()}```")
 
+    ## MUSIC MODULE
+    @commands.command()
+    async def join(self, ctx):
+        if ctx.author.voice is None:
+            await ctx.send("You are not in a voice channel ! Please join a voice channel.")
+
+        voice_channel = ctx.author.voice.channel
+
+        if ctx.voice_client is None:
+            await voice_channel.connect()
+        else:
+            await ctx.voice_client.move_to(voice_channel)
+    
+    @commands.command()
+    async def dc_voice(self, ctx):
+        await ctx.voice_client.disconnect()
+
+    @commands.command()
+    async def play(self, ctx, url):
+        ctx.voice_client.stop()
+        source = await discord.FFmpegOpusAudio.from_probe(self._ytb_music.get_ffmpeg_url(url), **FFMPEG_OPTIONS)
+        ctx.voice_client.play(source)
+
+    @commands.command()
+    async def search_play(self, ctx, query):
+        ctx.voice_client.stop()
+        url = self._ytb_music.search_url(query)
+        source = await discord.FFmpegOpusAudio.from_probe(self._ytb_music.get_ffmpeg_url(url), **FFMPEG_OPTIONS)
+        ctx.voice_client.play(source)
+        await ctx.send(f"Now playing 😎 >> {url}")
+
+    @commands.command()
+    async def pause(self, ctx):
+        await ctx.voice_client.pause()
+        await ctx.send("Paused ⏸️")
+
+    @commands.command()
+    async def resume(self, ctx):
+        await ctx.voice_client.resume()
+        await ctx.send("Resuming ▶️")
+
     ## Bot event functions
     @commands.Cog.listener()
     async def on_ready(self):
@@ -69,6 +119,6 @@ class PPBot(commands.Cog):
         print (startup_text)
 
 # Create bot, cog and run
-bot = commands.Bot(command_prefix = "$")
+bot = commands.Bot(command_prefix = "!")
 bot.add_cog(PPBot(bot))
-bot.run(os.environ.get('DISCORD_TOKEN'))
+bot.run(os.environ.get('PPBOT_TOKEN'))

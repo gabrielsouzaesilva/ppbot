@@ -11,7 +11,7 @@ class PPBot(commands.Cog):
     
     @commands.Cog.listener()
     async def on_ready(self):
-        startup_text = "Patife Bot is online !"
+        startup_text = "Patife Bot is online !!"
         print (startup_text)
 
     @commands.command()
